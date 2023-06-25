@@ -47,9 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 15.0),
-                  buildTextField(_userController, 'Usuario'),
+                  buildTextField(_userController, 'Usuario', false),
                   const SizedBox(height: 10.0),
-                  buildTextField(_passwordController, 'Password'),
+                  buildTextField(_passwordController, 'Password', true),
                 ],
               ),
               const SizedBox(height: 30),
@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () {
                   String user = _userController.text;
                   String password = _passwordController.text;
-                  sendLoginData(context, 'admin', 'admin');
+                  sendLoginData(context, user, password);
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -78,9 +78,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
-  Widget buildTextField(TextEditingController controller, String labelText) {
+  Widget buildTextField(
+      TextEditingController controller, String labelText, bool pass) {
     return TextField(
       controller: controller,
+      obscureText: pass,
       decoration: InputDecoration(
         labelText: labelText,
         filled: true,
