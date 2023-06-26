@@ -25,13 +25,13 @@ Widget buildTextField(TextEditingController controller, String labelText) {
 }
 
 void goToHomeScreen() {
-  print('Pin correcto!!');
   Get.offAllNamed(Routes.getHomeRoute());
 }
 
 void sendLoginData(BuildContext context, String user, String password) async {
   /** Response del back */
   var storage = const FlutterSecureStorage();
+  String respuesta;
   var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
   var request =
       http.Request('POST', Uri.parse('http://localhost:8080/api/login/'));
@@ -43,59 +43,17 @@ void sendLoginData(BuildContext context, String user, String password) async {
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
+    String aux = await response.stream.bytesToString();
+    respuesta = proccessResponse(aux);
+    print(respuesta);
+    storage.write(key: 'id', value: respuesta);
     goToHomeScreen();
   } else {
     print(response.reasonPhrase);
   }
 }
 
-// void sendLoginData(BuildContext context, String user, String password) {
-//   /** Response del back */
-//   var storage = const FlutterSecureStorage();
-//   String apiUrl = conf.baseURL + conf.oauth;
-
-//   // Create a Map of the login data
-//   Map<String, String> requestHeaders = {
-//     'Content-Type': 'application/x-www-form-urlencoded'
-//   };
-//   Map<String, String> loginData = {
-//     'usuario': user,
-//     'password': password,
-//   };
-
-//   // Encode the login data as JSON
-//   final url = Uri.parse(apiUrl);
-//   final request = http.Request('POST', url);
-//   request.headers.addAll(requestHeaders);
-//   request.bodyFields = loginData;
-
-//   // Send the login request to the backend using the http package
-//   http
-//       .post(Uri.parse(apiUrl),
-//           headers: request.headers, body: request.bodyFields)
-//       .then((response) async {
-//     if (response.statusCode == 200) {
-//       // Login successful
-//       // TODO: Handle the response from the backend
-//       await storage.write(
-//           key: 'token', value: json.decode(response.body)["access_token"]);
-//       var aux = await storage.read(key: 'token');
-//       print(aux);
-//       print(response.body);
-//       goToHomeScreen();
-//     } else {
-//       // Login failed
-//       // TODO: Handle the error response from the backend
-//       print('Error: ${response.statusCode}');
-//     }
-//   }).catchError((error) {
-//     // Login failed due to an exception
-//     // TODO: Handle the error
-//     print('Error: $error');
-//   });
-//   goToHomeScreen();
-// }
-
-
-
+String proccessResponse(String body) {
+  var jsonResult = jsonDecode(body);
+  return jsonResult['id'];
+}

@@ -76,6 +76,7 @@ Future<void> _showMyDialog(BuildContext context, Ficha ficha) async {
               Text("Doctor " + ficha.DoctorId),
               Text("Paciente " + ficha.PacienteId),
               Text("Motivo: " + ficha.motivo),
+              Text("Diagnóstico: " + ficha.diagnostico),
               Text("Tratamiento: " + ficha.tratamiento),
               Text("Fecha: " + ficha.fecha)
             ],
