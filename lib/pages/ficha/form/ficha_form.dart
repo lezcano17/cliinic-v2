@@ -1,6 +1,8 @@
 import 'package:cliinic_v2/pages/common/appbar.dart';
 import 'package:flutter/material.dart';
 
+import '../view/ficha_controller.dart';
+
 class FichaFormScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -72,9 +74,7 @@ class FichaFormScreen extends StatelessWidget {
             SizedBox(height: 32),
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  // TODO: Implement form submission functionality
-                },
+                onPressed: () {},
                 child: Text('Submit'),
               ),
             ),

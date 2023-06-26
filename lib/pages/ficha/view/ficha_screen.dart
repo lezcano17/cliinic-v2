@@ -1,4 +1,5 @@
 import 'package:cliinic_v2/pages/common/appbar.dart';
+import 'package:cliinic_v2/pages/ficha/view/ficha_controller.dart';
 import 'package:flutter/material.dart';
 
 class FichaScreen extends StatefulWidget {
@@ -7,35 +8,17 @@ class FichaScreen extends StatefulWidget {
 }
 
 class _FichaScreenState extends State<FichaScreen> {
-  List<MyObject> objects = [];
+  List<Ficha> objects = [];
 
   @override
   void initState() {
     super.initState();
     // Fetch objects asynchronously and populate the list
-    fetchObjects().then((fetchedObjects) {
+    fetchFichas().then((fetchedObjects) {
       setState(() {
         objects = fetchedObjects;
       });
     });
-  }
-
-  Future<List<MyObject>> fetchObjects() async {
-    // TODO: Make your asynchronous request to fetch the objects
-    // Example:
-    // final response = await http.get('https://api.example.com/objects');
-    // final jsonData = jsonDecode(response.body);
-    // final objects = jsonData.map((data) => MyObject.fromJson(data)).toList();
-    // return objects;
-
-    // Placeholder code to demonstrate the functionality
-    await Future.delayed(Duration(seconds: 1));
-
-    return [
-      MyObject(name: 'Object 1', description: 'This is the first object'),
-      MyObject(name: 'Object 2', description: 'This is the second object'),
-      MyObject(name: 'Object 3', description: 'This is the third object'),
-    ];
   }
 
   @override
@@ -46,11 +29,10 @@ class _FichaScreenState extends State<FichaScreen> {
         itemCount: objects.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(objects[index].name),
-            subtitle: Text(objects[index].description),
+            title: Text("Doctor ${objects[index].DoctorId}"),
+            subtitle: Text("Paciente ${objects[index].PacienteId}"),
             onTap: () {
-              // TODO: Implement item tap functionality
-              // You can navigate to a detailed view of the object or perform any other action.
+              showFicha(context, objects[index]);
             },
           );
         },
@@ -59,16 +41,33 @@ class _FichaScreenState extends State<FichaScreen> {
   }
 }
 
-class MyObject {
-  final String name;
-  final String description;
+class Ficha {
+  final String id;
+  final String motivo;
+  final String diagnostico;
+  final String tratamiento;
+  final String fecha;
+  final String PacienteId;
+  final String DoctorId;
 
-  MyObject({required this.name, required this.description});
+  Ficha(
+      {required this.id,
+      required this.motivo,
+      required this.diagnostico,
+      required this.fecha,
+      required this.tratamiento,
+      required this.PacienteId,
+      required this.DoctorId});
 
-  factory MyObject.fromJson(Map<String, dynamic> json) {
-    return MyObject(
-      name: json['name'],
-      description: json['description'],
+  factory Ficha.fromJson(Map<String, dynamic> json) {
+    return Ficha(
+      id: json['id'],
+      motivo: json['motivo'],
+      diagnostico: json['diagnostico'],
+      fecha: json['fecha'],
+      tratamiento: json['tratamiento'],
+      PacienteId: json['doctorId'],
+      DoctorId: json['pacienteId'],
     );
   }
 }
