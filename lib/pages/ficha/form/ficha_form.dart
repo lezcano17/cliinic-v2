@@ -1,6 +1,8 @@
+import 'package:cliinic_v2/config/config.dart';
 import 'package:cliinic_v2/models/paciente.dart';
 import 'package:cliinic_v2/pages/common/appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'ficha_form_controller.dart';
 
@@ -61,20 +63,25 @@ class _FichaFormScreenState extends State<FichaFormScreen> {
     }
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
+    final formattedDate =
+        "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
       // TODO: Process the form data (fecha, selectedPaciente, motivoConsulta, diagnostico, tratamiento)
       // Example:
-      // final formData = {
-      //   'fecha': selectedDate,
-      //   'paciente': selectedPaciente,
-      //   'motivoConsulta': motivoConsulta,
-      //   'diagnostico': diagnostico,
-      //   'tratamiento': tratamiento,
-      // };
-      // sendFormData(formData);
+      final getDoctorId = await FlutterSecureStorage().read(key: 'id');
+      final Map<String, String> formData = {
+        'fecha': formattedDate,
+        'id_paciente': selectedPacienteState,
+        'motivo': motivoConsulta,
+        'diagnostico': diagnostico,
+        'tratamiento': tratamiento,
+        'id_doctor': getDoctorId ?? "",
+      };
+      print(formData);
+      final response = await submitFicha(formData);
 
       // Placeholder code to demonstrate the functionality
       showDialog(
@@ -86,7 +93,7 @@ class _FichaFormScreenState extends State<FichaFormScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Fecha: $selectedDate'),
+                Text('Fecha: $formattedDate'),
                 Text('Paciente: $selectedPacienteState'),
                 Text('Motivo de Consulta: $motivoConsulta'),
                 Text('Diagnóstico: $diagnostico'),

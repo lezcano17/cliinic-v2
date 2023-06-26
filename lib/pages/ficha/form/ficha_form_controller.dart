@@ -58,3 +58,30 @@ List<Paciente> procesarPacientesResponse(String respuesta) {
   }
   return listaPaciente;
 }
+
+Future<void> submitFicha(Map<String, String> body) async {
+  var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+
+  String apiURL = conf.baseURL + conf.ficha;
+  final url = Uri.parse(apiURL);
+  print(url);
+  final request = http.Request(
+    'POST',
+    url,
+  );
+  request.headers.addAll(headers);
+  request.bodyFields = body;
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: body,
+  );
+
+  if (response.statusCode == 200) {
+    // print(await response.stream.bytesToString());
+    String aux = response.body;
+    print(aux);
+  } else {
+    print(response.reasonPhrase);
+  }
+}

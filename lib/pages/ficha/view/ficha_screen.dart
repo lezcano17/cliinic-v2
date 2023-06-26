@@ -1,6 +1,8 @@
 import 'package:cliinic_v2/pages/common/appbar.dart';
+import 'package:cliinic_v2/pages/ficha/bloc/ficha_list_bloc.dart';
 import 'package:cliinic_v2/pages/ficha/view/ficha_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FichaScreen extends StatefulWidget {
   @override
@@ -25,17 +27,46 @@ class _FichaScreenState extends State<FichaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CommonAppBar(),
-      body: ListView.builder(
-        itemCount: objects.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text("Doctor ${objects[index].DoctorId}"),
-            subtitle: Text("Paciente ${objects[index].PacienteId}"),
-            onTap: () {
-              showFicha(context, objects[index]);
-            },
-          );
-        },
+      body: BlocProvider(
+        create: (_) => FichaListBloc()
+          ..add(
+            FichaListInitEvent(
+              listaFicha: objects,
+            ),
+          ),
+        child: BlocBuilder<FichaListBloc, FichaListState>(
+          builder: (context, state) {
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _DropDownFilter(),
+                      _SearchBar(),
+                    ],
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.listafichas.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title:
+                            Text("Doctor ${state.listafichas[index].DoctorId}"),
+                        subtitle: Text(
+                            "Paciente ${state.listafichas[index].PacienteId}"),
+                        onTap: () {
+                          showFicha(context, objects[index]);
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -68,6 +99,42 @@ class Ficha {
       tratamiento: json['tratamiento'],
       PacienteId: json['doctorId'],
       DoctorId: json['pacienteId'],
+    );
+  }
+}
+
+class _DropDownFilter extends StatelessWidget {
+  final List<String> options = const [
+    "MOTIVO",
+    "FECHA",
+    "DOCTOR_ID",
+    "PACIENTE_ID",
+  ];
+  const _DropDownFilter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton(
+      value: options.first,
+      items: options.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (value) {},
+    );
+  }
+}
+
+class _SearchBar extends StatelessWidget {
+  const _SearchBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.40,
+      child: TextFormField(),
     );
   }
 }
