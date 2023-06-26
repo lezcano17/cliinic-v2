@@ -33,8 +33,7 @@ void sendLoginData(BuildContext context, String user, String password) async {
   var storage = const FlutterSecureStorage();
   String respuesta;
   var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-  var request =
-      http.Request('POST', Uri.parse('http://localhost:8080/api/login/'));
+  var request = http.Request('POST', Uri.parse(conf.baseURL + conf.oauth));
   request.bodyFields = {'usuario': user, 'password': password};
   request.headers.addAll(headers);
   print(request.bodyFields);
